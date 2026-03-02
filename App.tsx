@@ -18,8 +18,7 @@ import NotProsumerIndustrialFlow from './components/NotProsumerIndustrialFlow';
 import LargeDemandProsumerFlow from './components/LargeDemandProsumerFlow';
 import NotProsumerLargeDemandFlow from './components/NotProsumerLargeDemandFlow';
 
-import logoProsumidores from './components/logo-prosumidores.png';
-import logoMinprod from './components/logo-minprod.png';
+import { logoProsumidores, logoMinprod } from './components/Logos';
 
 const App: React.FC = () => {
   const [step, setStep] = useState<number>(1);
