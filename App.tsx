@@ -21,7 +21,7 @@ import NotProsumerLargeDemandFlow from './components/NotProsumerLargeDemandFlow'
 import { logoProsumidores, logoMinprod } from './components/Logos';
 
 const App: React.FC = () => {
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(0);
   const [state, setState] = useState<AppState>({
     distribution: null,
     prosumerStatus: null,
@@ -68,7 +68,7 @@ const App: React.FC = () => {
   };
 
   const handleBack = () => {
-    setStep(prev => Math.max(1, prev - 1));
+    setStep(prev => Math.max(0, prev - 1));
   };
 
   return (
@@ -88,6 +88,42 @@ const App: React.FC = () => {
       </header>
 
       <main className="flex-grow max-w-5xl mx-auto px-4 py-12 w-full">
+        {step === 0 && (
+          <div className="max-w-2xl mx-auto animate-fadeIn">
+            <div className="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-2xl shadow-sm mb-8">
+              <div className="flex items-center mb-4">
+                <div className="bg-amber-400 p-2 rounded-lg mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-black text-amber-900 uppercase tracking-tight">Aviso Importante</h2>
+              </div>
+              
+              <div className="space-y-4 text-slate-700 leading-relaxed text-sm md:text-base">
+                <p>
+                  Este Simulador de Facturas para Prosumidores es una herramienta pensada para ayudarte a visualizar los ahorros obtenidos por medio de tu sistema de generación renovable conectado a la red. Los resultados deben interpretarse como una estimación orientativa, útil para visualizar posibles ahorros y beneficios, pero no como una factura definitiva.
+                </p>
+                <p>
+                  Los montos calculados pueden presentar variaciones respecto de la facturación efectiva, debido a posibles actualizaciones tarifarias, modificaciones en los esquemas de incentivos, variaciones en impuestos y cargos aplicables, en relación al período de facturación simulado.
+                </p>
+                <p className="font-medium">
+                  La información proporcionada por el simulador tiene carácter informativo y no reviste condición de liquidación oficial ni genera derecho adquirido alguno, debiendo considerarse como una herramienta de apoyo para la toma de decisiones.
+                </p>
+              </div>
+
+              <div className="mt-10 flex justify-center">
+                <button 
+                  onClick={() => setStep(1)}
+                  className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] text-white px-12 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-sm shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-95"
+                >
+                  Continuar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {step === 1 && (
           <DistributionScreen onSelect={handleDistributionSelect} />
         )}

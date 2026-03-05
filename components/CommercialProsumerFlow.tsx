@@ -23,7 +23,8 @@ interface LocalFormData {
 
 const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
   const [showResults, setShowResults] = useState(false);
-  const [showAux, setShowAux] = useState(false);
+  const [showAux, setShowAux] = useState(true);
+  const [showFullLog, setShowFullLog] = useState(true);
   
   const [formData, setFormData] = useState<LocalFormData>({
     energyGenerated: "",
@@ -270,6 +271,51 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
           </div>
         </div>
 
+        {/* Sección de Cálculos Detallados */}
+        <div className="mt-12 border-t border-slate-200 pt-8">
+          <button 
+            onClick={() => setShowAux(!showAux)} 
+            className="flex items-center text-slate-400 hover:text-slate-600 font-black uppercase text-[10px] tracking-[0.2em] transition-all mb-4"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 mr-2 transition-transform duration-300 ${showAux ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            Cálculos Auxiliares
+          </button>
+          
+          {showAux && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 animate-fadeIn">
+              {Object.entries(results).map(([key, value]) => (
+                <div key={key} className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{key}</span>
+                  <span className="text-xs font-mono font-bold text-slate-700">
+                    {typeof value === 'number' ? formatNumber(value) : String(value)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <button 
+            onClick={() => setShowFullLog(!showFullLog)} 
+            className="flex items-center text-slate-400 hover:text-slate-600 font-black uppercase text-[10px] tracking-[0.2em] transition-all"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 mr-2 transition-transform duration-300 ${showFullLog ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            Registro Completo de Cálculos
+          </button>
+
+          {showFullLog && (
+            <div className="mt-4 bg-slate-900 p-6 rounded-2xl overflow-hidden shadow-inner animate-fadeIn">
+              <div className="overflow-x-auto">
+                <pre className="text-[10px] text-emerald-400 font-mono leading-relaxed">
+                  {JSON.stringify({ results, formData }, null, 2)}
+                </pre>
+              </div>
+            </div>
+          )}
+        </div>
 
       </div>
     );
