@@ -409,8 +409,11 @@ const NotProsumerLargeDemandFlow: React.FC<Props> = ({ onBack }) => {
         <h3 className="text-lg font-black text-purple-600 border-b pb-2 mb-4 italic uppercase tracking-tighter">POTENCIA Y CONSUMO (kWh)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className={labelClass}>Potencia de la instalación fotovoltaica (kW)</label>
+            <label className={labelClass}>Potencia contratada (kW)</label>
             <input type="number" step="any" className={inputClass} value={formData.pvPower} onChange={(e) => handleInputChange('pvPower', e.target.value)} placeholder="Ej: 50" />
+            <p className="mt-1 text-[10px] text-slate-400 italic leading-relaxed border-l-2 border-purple-200 pl-2">
+              Si el usuario cuenta con distintos valores de potencia, debe tomar el mayor.
+            </p>
           </div>
           <div>
             <label className={labelClass}>Consumo Horario pico (kWh)</label>
@@ -436,10 +439,16 @@ const NotProsumerLargeDemandFlow: React.FC<Props> = ({ onBack }) => {
           <div><label className={labelClass}>Cargo Cap. Suministro horario fuera de pico</label><input type="number" className={inputClass} value={formData.cargoCapFueraPico} onChange={(e) => handleInputChange('cargoCapFueraPico', e.target.value)} /></div>
           <div><label className={labelClass}>Cargo Cap. potencia adquirida</label><input type="number" className={inputClass} value={formData.cargoCapPotencia} onChange={(e) => handleInputChange('cargoCapPotencia', e.target.value)} /></div>
           <div><label className={labelClass}>Tarifa eléctrica horario pico</label><input type="number" className={inputClass} value={formData.tarifaPico} onChange={(e) => handleInputChange('tarifaPico', e.target.value)} /></div>
-          <div><label className={labelClass}>Tarifa eléctrica resto, sin prosumidor</label><input type="number" className={inputClass} value={formData.tarifaRestoSin} onChange={(e) => handleInputChange('tarifaRestoSin', e.target.value)} /></div>
+          <div><label className={labelClass}>Tarifa eléctrica horario resto</label><input type="number" className={inputClass} value={formData.tarifaRestoSin} onChange={(e) => handleInputChange('tarifaRestoSin', e.target.value)} /></div>
           <div><label className={labelClass}>Precio unitario resto ($/kWh)</label><input type="number" step="any" className={inputClass} value={formData.precioUnitarioResto} onChange={(e) => handleInputChange('precioUnitarioResto', e.target.value)} /></div>
           <div><label className={labelClass}>Tarifa eléctrica horario valle</label><input type="number" className={inputClass} value={formData.tarifaValle} onChange={(e) => handleInputChange('tarifaValle', e.target.value)} /></div>
-          <div><label className={labelClass}>Recargo por factor de potencia</label><input type="number" className={inputClass} value={formData.recargoFactorPotencia} onChange={(e) => handleInputChange('recargoFactorPotencia', e.target.value)} /></div>
+          <div>
+            <label className={labelClass}>Recargo/Bonificación por factor de potencia</label>
+            <input type="number" className={inputClass} value={formData.recargoFactorPotencia} onChange={(e) => handleInputChange('recargoFactorPotencia', e.target.value)} />
+            <p className="mt-1 text-[10px] text-slate-400 italic leading-relaxed border-l-2 border-purple-200 pl-2">
+              El usuario debe completar el importe con el signo que figura en la factura.
+            </p>
+          </div>
           <div><label className={labelClass}>Cuota de Alumbrado Público C.A.P</label><input type="number" className={inputClass} value={formData.cuotaCAP} onChange={(e) => handleInputChange('cuotaCAP', e.target.value)} /></div>
           <div><label className={labelClass}>Subtotal General de la Factura ($)</label><input type="number" className={inputClass} value={formData.subtotalGeneralInput} onChange={(e) => handleInputChange('subtotalGeneralInput', e.target.value)} /></div>
           <div className="md:col-span-2">
