@@ -4,6 +4,7 @@ import { FixedCharge, EnergyBand, UserType } from '../types';
 import { formatCurrency, formatNumber } from '../services/calculatorService';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import FeedbackForm from './FeedbackForm';
 
 interface Props {
   onBack: () => void;
@@ -335,6 +336,10 @@ const ResidentialProsumerFlow: React.FC<Props> = ({ onBack }) => {
               </div>
             </div>
           )}
+        </div>
+        
+        <div className="mt-12">
+          <FeedbackForm userType="Prosumidor Residencial" />
         </div>
 
       </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   DistributionType, 
   ProsumerStatus, 
@@ -17,8 +17,11 @@ import NotProsumerCommercialFlow from './components/NotProsumerCommercialFlow';
 import NotProsumerIndustrialFlow from './components/NotProsumerIndustrialFlow';
 import LargeDemandProsumerFlow from './components/LargeDemandProsumerFlow';
 import NotProsumerLargeDemandFlow from './components/NotProsumerLargeDemandFlow';
+import StatsDashboard from './components/StatsDashboard';
 
 import { logoProsumidores, logoMinprod } from './components/Logos';
+import { db } from './firebase';
+import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 
 const App: React.FC = () => {
   const [step, setStep] = useState<number>(0);
@@ -27,6 +30,26 @@ const App: React.FC = () => {
     prosumerStatus: null,
     category: null
   });
+
+  useEffect(() => {
+    const incrementVisits = async () => {
+      const metadataRef = doc(db, 'metadata', 'global');
+      try {
+        const docSnap = await getDoc(metadataRef);
+        if (!docSnap.exists()) {
+          // Start at 23 as requested
+          await setDoc(metadataRef, { visitCount: 23 });
+        } else {
+          await updateDoc(metadataRef, {
+            visitCount: increment(1)
+          });
+        }
+      } catch (error) {
+        console.error('Error incrementing visits:', error);
+      }
+    };
+    incrementVisits();
+  }, []);
 
   const handleDistributionSelect = (dist: DistributionType) => {
     setState(prev => ({ ...prev, distribution: dist }));
@@ -192,6 +215,10 @@ const App: React.FC = () => {
             onBack={() => setStep(3)} 
           />
         )}
+
+        {step === 12 && (
+          <StatsDashboard onBack={() => setStep(0)} />
+        )}
       </main>
 
       <footer className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] text-white py-12 px-4 mt-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
@@ -257,8 +284,17 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          <div className="mt-12 pt-8 border-t border-white/20 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/70 italic">&copy; 2026 Gobierno de Santa Fe</p>
+          <div className="mt-12 pt-8 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-6">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/70 italic order-2 md:order-1">&copy; 2026 Gobierno de Santa Fe</p>
+            <button 
+              onClick={() => setStep(12)}
+              className="order-1 md:order-2 flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-[0.2em] text-white/80 border border-white/10"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Estadísticas
+            </button>
           </div>
         </div>
       </footer>

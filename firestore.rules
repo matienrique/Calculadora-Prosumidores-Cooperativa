@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidFeedback(data) {
+      return data.keys().hasAll(['number', 'date', 'userType', 'resolved']) &&
+             data.number is int &&
+             data.date is string &&
+             data.userType is string &&
+             data.resolved is bool &&
+             (!('observations' in data) || data.observations is string);
+    }
+
+    function isValidMetadata(data) {
+      return data.keys().hasAll(['visitCount']) &&
+             data.visitCount is int;
+    }
+
+    // Stats collection
+    match /stats/{docId} {
+      // Allow anyone to create feedback
+      allow create: if isValidFeedback(request.resource.data);
+      // Allow reading for statistics (protected by password in UI)
+      allow read: if true;
+      // Allow deletion for administrators (protected by password in UI)
+      allow delete: if true;
+    }
+
+    // Metadata collection
+    match /metadata/{docId} {
+      allow read: if true;
+      allow create, update: if isValidMetadata(request.resource.data);
+    }
+  }
+}

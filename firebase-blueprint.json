@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Feedback": {
+      "title": "Feedback",
+      "description": "User feedback and statistics for the simulator.",
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer",
+          "description": "Sequential consultation number."
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date of the consultation."
+        },
+        "userType": {
+          "type": "string",
+          "description": "Type of user (Prosumer/No Prosumer, Category)."
+        },
+        "resolved": {
+          "type": "boolean",
+          "description": "Whether the user found the answer they were looking for."
+        },
+        "observations": {
+          "type": "string",
+          "description": "User observations or recommendations."
+        }
+      },
+      "required": ["number", "date", "userType", "resolved"]
+    },
+    "Metadata": {
+      "title": "Metadata",
+      "description": "Global application metadata like visit counters.",
+      "type": "object",
+      "properties": {
+        "visitCount": {
+          "type": "integer",
+          "description": "Total number of visits to the page."
+        }
+      },
+      "required": ["visitCount"]
+    }
+  },
+  "firestore": {
+    "/stats": {
+      "schema": "Feedback",
+      "description": "Collection of user feedback entries."
+    },
+    "/metadata": {
+      "schema": "Metadata",
+      "description": "Global application metadata."
+    }
+  }
+}

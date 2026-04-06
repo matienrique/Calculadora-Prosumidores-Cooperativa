@@ -3,6 +3,7 @@ import { FixedCharge, EnergyBand } from '../types';
 import { formatCurrency, formatNumber } from '../services/calculatorService';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import FeedbackForm from './FeedbackForm';
 
 interface Props {
   onBack: () => void;
@@ -382,6 +383,10 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
               </div>
             </div>
           )}
+        </div>
+        
+        <div className="mt-12">
+          <FeedbackForm userType="No Prosumidor Residencial" />
         </div>
 
       </div>
