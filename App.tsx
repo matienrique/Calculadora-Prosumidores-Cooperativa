@@ -17,6 +17,8 @@ import NotProsumerCommercialFlow from './components/NotProsumerCommercialFlow';
 import NotProsumerIndustrialFlow from './components/NotProsumerIndustrialFlow';
 import LargeDemandProsumerFlow from './components/LargeDemandProsumerFlow';
 import NotProsumerLargeDemandFlow from './components/NotProsumerLargeDemandFlow';
+import NotProsumerAssociationsFlow from './components/NotProsumerAssociationsFlow';
+import AssociationsProsumerFlow from './components/AssociationsProsumerFlow';
 import StatsDashboard from './components/StatsDashboard';
 
 import { logoProsumidores, logoMinprod } from './components/Logos';
@@ -72,6 +74,8 @@ const App: React.FC = () => {
         setStep(6);
       } else if (category === UserCategory.LARGE_DEMAND) {
         setStep(10);
+      } else if (category === UserCategory.ASSOCIATIONS) {
+        setStep(14);
       } else {
         alert(`Has seleccionado: ${category}. Este flujo específico está en desarrollo.`);
       }
@@ -84,6 +88,8 @@ const App: React.FC = () => {
         setStep(9);
       } else if (category === UserCategory.LARGE_DEMAND) {
         setStep(11);
+      } else if (category === UserCategory.ASSOCIATIONS) {
+        setStep(13);
       } else {
         alert(`Has seleccionado: ${category}. El flujo para No Prosumidores para esta categoría está en desarrollo.`);
       }
@@ -165,6 +171,7 @@ const App: React.FC = () => {
           <CategorySelectionScreen 
             onSelect={handleCategorySelect} 
             onBack={handleBack} 
+            prosumerStatus={state.prosumerStatus}
           />
         )}
 
@@ -212,6 +219,18 @@ const App: React.FC = () => {
 
         {step === 11 && (
           <NotProsumerLargeDemandFlow 
+            onBack={() => setStep(3)} 
+          />
+        )}
+
+        {step === 13 && (
+          <NotProsumerAssociationsFlow 
+            onBack={() => setStep(3)} 
+          />
+        )}
+
+        {step === 14 && (
+          <AssociationsProsumerFlow 
             onBack={() => setStep(3)} 
           />
         )}

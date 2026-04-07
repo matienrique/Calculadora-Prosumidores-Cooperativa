@@ -12,7 +12,8 @@ export enum UserCategory {
   RESIDENTIAL = 'Usuario Residencial',
   COMMERCIAL = 'Usuario Comercial',
   INDUSTRIAL = 'Usuario Industrial',
-  LARGE_DEMAND = 'Usuario Gran Demanda'
+  LARGE_DEMAND = 'Usuario Gran Demanda',
+  ASSOCIATIONS = 'Asociaciones'
 }
 
 // UserType used for tax calculations and form selection
