@@ -245,6 +245,7 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
         <div className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] p-6 rounded-3xl shadow-xl text-center text-white mt-6">
             <p className="text-purple-100 text-[10px] font-black uppercase mb-1">Ahorro mensual estimado</p>
             <p className="text-3xl font-bold">{formatCurrency(results.ahorroTotal)}</p>
+            <p className="text-sm text-white/90 font-bold mt-1">({Math.round((results.ahorroTotal / results.totalFacturaSinPros) * 100)}% de ahorro)</p>
         </div>
 
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">

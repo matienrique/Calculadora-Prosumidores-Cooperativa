@@ -226,7 +226,7 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
           <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center italic">
             <span className="w-2 h-6 bg-emerald-600 rounded mr-3"></span>
-            Ahorro Total: {formatCurrency(results.ahorroTotal)}
+            Ahorro Total: {formatCurrency(results.ahorroTotal)} ({Math.round((results.ahorroTotal / results.totalAPagarSin) * 100)}%)
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="space-y-4">

@@ -284,7 +284,7 @@ const NotProsumerCommercialFlow: React.FC<Props> = ({ onBack }) => {
 
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
           <h3 className="text-xl font-black text-slate-800 mb-8 uppercase italic tracking-tighter">
-            AHORRO TOTAL ESTIMADO: {formatCurrency(results.ahorroTotal)}
+            AHORRO TOTAL ESTIMADO: {formatCurrency(results.ahorroTotal)} ({Math.round((results.ahorroTotal / results.totalToPaySin) * 100)}%)
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="space-y-4 text-left">

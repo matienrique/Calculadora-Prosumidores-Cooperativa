@@ -110,6 +110,7 @@ const ResultsView: React.FC<Props> = ({ results, formData, onRestart, onBack }) 
         <div className={`${cardClass} bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] text-white shadow-lg`}>
           <p className="text-sm text-white/80 font-bold uppercase tracking-wider">Ahorro Mensual</p>
           <p className="text-3xl font-extrabold text-white">{formatCurrency(results.ahorroTotal)}</p>
+          <p className="text-xs text-white/70 font-bold mt-1">({Math.round((results.ahorroTotal / results.totalAPagarSin) * 100)}% de ahorro)</p>
         </div>
       </div>
 

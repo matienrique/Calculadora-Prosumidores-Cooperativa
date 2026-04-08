@@ -225,6 +225,7 @@ const IndustrialProsumerFlow: React.FC<Props> = ({ onBack }) => {
         <div className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] p-6 rounded-3xl shadow-xl text-center mt-6 text-white">
             <p className="text-white/80 text-[10px] font-black uppercase mb-1">Ahorro mensual estimado</p>
             <p className="text-3xl font-bold text-white">{formatCurrency(results.ahorroTotal)}</p>
+            <p className="text-sm text-white/90 font-bold mt-1">({Math.round((results.ahorroTotal / results.totalAPagarSin) * 100)}% de ahorro)</p>
         </div>
 
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
