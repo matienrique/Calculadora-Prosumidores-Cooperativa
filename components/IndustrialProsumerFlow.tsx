@@ -372,8 +372,9 @@ const IndustrialProsumerFlow: React.FC<Props> = ({ onBack }) => {
         </div>
 
         <div className="pt-4 border-t">
-          <label className={labelClass}>Reconocimiento beneficio ambiental / Reconocimiento Gobierno de Santa Fe ($)</label>
+          <label className={labelClass}>Reconocimiento por beneficio ambiental/Reconocimiento del Gobierno de Santa Fe ($)</label>
           <input type="number" step="any" className={inputClass} value={formData.environmentalBenefit} onChange={(e) => handleInputChange('environmentalBenefit', e.target.value)} placeholder="Importe en ARS" />
+          <p className="text-[10px] text-slate-400 italic mt-1">Inserte el valor positivo del reconocimiento que se le cobra en la factura</p>
         </div>
 
         <div className="pt-4 border-t space-y-6">
@@ -386,8 +387,13 @@ const IndustrialProsumerFlow: React.FC<Props> = ({ onBack }) => {
                   <button onClick={() => removeItem('energyBands', b.id)} className="p-1 text-red-400 hover:text-red-600"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                 )}
               </div>
-              <div><label className="text-[10px] font-bold text-slate-500 uppercase">Energía (kWh)</label><input type="number" step="any" className={inputClass} value={b.kwh} onChange={(e) => updateList('energyBands', b.id, 'kwh', e.target.value)} /></div>
+              <div><label className="text-[10px] font-bold text-slate-500 uppercase">Energía acumulada (kWh)</label><input type="number" step="any" className={inputClass} value={b.kwh} onChange={(e) => updateList('energyBands', b.id, 'kwh', e.target.value)} /></div>
               <div><label className="text-[10px] font-bold text-slate-500 uppercase">Importe ($)</label><input type="number" step="any" className={inputClass} value={b.amount} onChange={(e) => updateList('energyBands', b.id, 'amount', e.target.value)} /></div>
+              <div className="col-span-2 bg-slate-100 p-2 rounded-lg border border-slate-200 mt-1">
+                <p className="text-[9px] font-bold text-blue-600 leading-tight">
+                  Si su factura dice "Consumo de (un valor) a (otro valor)" o dice "Hasta (un valor)", ingresar el mayor valor. Si en cambio, su factura dice "Primeros (valor)" o "Siguientes (valor)", deberá ingresar el valor acumulado hasta esta banda (sumando las energías de las bandas anteriores).
+                </p>
+              </div>
             </div>
           ))}
           <button onClick={() => addItem('energyBands')} className="text-orange-600 font-bold text-sm hover:underline tracking-tight">+ Agregar Banda</button>
@@ -397,14 +403,14 @@ const IndustrialProsumerFlow: React.FC<Props> = ({ onBack }) => {
         </div>
 
         <div className="pt-6 border-t grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div><label className={labelClass}>Subtotal Energía Eléctrica ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalEnergyElectric} onChange={(e) => handleInputChange('subtotalEnergyElectric', e.target.value)} /></div>
-          <div><label className={labelClass}>TOTAL A PAGAR ($) *</label><input type="number" step="any" className={`${inputClass} border-orange-500 bg-orange-50 font-black`} value={formData.totalToPay} onChange={(e) => handleInputChange('totalToPay', e.target.value)} /></div>
+          <div>
+            <label className={labelClass}>Subtotal Energía Eléctrica ($)</label>
+            <input type="number" step="any" className={inputClass} value={formData.subtotalEnergyElectric} onChange={(e) => handleInputChange('subtotalEnergyElectric', e.target.value)} />
+            <p className="text-[10px] text-slate-400 italic mt-1">Corresponde al total de cargos fijos + cargos variables</p>
+          </div>
+          <div><label className={labelClass}>Subtotal Impuestos Energía Eléctrica ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalTaxes} onChange={(e) => handleInputChange('subtotalTaxes', e.target.value)} /></div>
+          <div className="md:col-span-2"><label className={`${labelClass} text-orange-600`}>TOTAL A PAGAR ($) *</label><input type="number" step="any" className={`${inputClass} border-orange-600 bg-orange-50 font-black text-xl shadow-inner`} value={formData.totalToPay} onChange={(e) => handleInputChange('totalToPay', e.target.value)} /></div>
         </div>
-      </div>
-
-      <div className={sectionClass}>
-        <h3 className="text-lg font-black text-orange-600 border-b pb-2 mb-4 italic">IMPUESTOS/GRAVÁMENES</h3>
-        <div><label className={labelClass}>Subtotal Impuestos Energía Eléctrica ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalTaxes} onChange={(e) => handleInputChange('subtotalTaxes', e.target.value)} /></div>
       </div>
 
       <div className="flex justify-center pt-8">

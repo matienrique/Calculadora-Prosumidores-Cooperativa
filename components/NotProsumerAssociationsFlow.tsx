@@ -465,7 +465,11 @@ const NotProsumerAssociationsFlow: React.FC<Props> = ({ onBack }) => {
               <input type="number" step="any" className={inputClass} value={formData.subtotalEnergySin} onChange={(e) => handleInputChange('subtotalEnergySin', e.target.value)} />
               <p className="text-[10px] text-slate-400 italic mt-1">Corresponde al total de cargos fijos + cargos variables</p>
             </div>
-            <div><label className={labelClass}>Subtotal impuestos ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalTaxesSin} onChange={(e) => handleInputChange('subtotalTaxesSin', e.target.value)} /></div>
+            <div>
+              <label className={labelClass}>Subtotal impuestos ($)</label>
+              <input type="number" step="any" className={inputClass} value={formData.subtotalTaxesSin} onChange={(e) => handleInputChange('subtotalTaxesSin', e.target.value)} />
+              <p className="text-[10px] text-slate-400 italic mt-1">Corresponde al total de impuestos cobrados en la factura</p>
+            </div>
             <div className="md:col-span-2"><label className={`${labelClass} text-blue-600`}>TOTAL A PAGAR ($) *</label><input type="number" step="any" className={`${inputClass} border-blue-600 bg-blue-50 font-black text-xl shadow-inner`} value={formData.totalToPaySin} onChange={(e) => handleInputChange('totalToPaySin', e.target.value)} /></div>
           </div>
         </div>
