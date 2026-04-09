@@ -496,19 +496,25 @@ const NotProsumerCommercialFlow: React.FC<Props> = ({ onBack }) => {
             {formData.energyBands.map((b, i) => (
               <div key={b.id} className="grid grid-cols-2 gap-4 bg-slate-50 p-6 rounded-3xl border border-slate-100 relative shadow-inner animate-fadeIn">
                 <div className="col-span-2 flex justify-between items-center text-[10px] font-black uppercase text-slate-400"><span>Banda #{i+1}</span><button onClick={() => removeItem('energyBands', b.id)} className="text-red-400 hover:text-red-600 p-2"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></div>
-                <div><label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Energía (kWh)</label><input type="number" step="any" className={inputClass} value={b.kwh} onChange={(e) => updateList('energyBands', b.id, 'kwh', e.target.value)} /></div>
+                <div><label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Energía acumulada (kWh)</label><input type="number" step="any" className={inputClass} value={b.kwh} onChange={(e) => updateList('energyBands', b.id, 'kwh', e.target.value)} /></div>
                 <div><label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Importe ($)</label><input type="number" step="any" className={inputClass} value={b.amount} onChange={(e) => updateList('energyBands', b.id, 'amount', e.target.value)} /></div>
+                <div className="col-span-2 bg-slate-100 p-3 rounded-xl border border-slate-200">
+                  <p className="text-[10px] font-bold text-blue-600 leading-tight">
+                    Si su factura dice "Consumo de (un valor) a (otro valor)" o dice "Hasta (un valor)", ingresar el mayor valor. Si en cambio, su factura dice "Primeros (valor)" o "Siguientes (valor)", deberá ingresar el valor acumulado hasta esta banda (sumando las energías de las bandas anteriores).
+                  </p>
+                </div>
               </div>
             ))}
             <button onClick={() => addItem('energyBands')} className="text-emerald-600 font-black text-xs uppercase tracking-widest">+ Agregar Banda</button>
-            <p className="text-[10px] text-slate-400 italic leading-relaxed border-l-4 border-emerald-200 pl-4 py-1">
-              Si tu factura muestra un rango de valores en la Banda de energía, ingresá el valor máximo del rango. Si aparece un único número, ingresá ese mismo valor.
-            </p>
           </div>
 
           <div className="pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div><label className={labelClass}>Subtotal Energía Eléctrica ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalEnergySin} onChange={(e) => handleInputChange('subtotalEnergySin', e.target.value)} /></div>
-            <div><label className={labelClass}>Subtotal Impuestos Sin ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalTaxesSin} onChange={(e) => handleInputChange('subtotalTaxesSin', e.target.value)} /></div>
+            <div>
+              <label className={labelClass}>Subtotal Energía Eléctrica ($)</label>
+              <input type="number" step="any" className={inputClass} value={formData.subtotalEnergySin} onChange={(e) => handleInputChange('subtotalEnergySin', e.target.value)} />
+              <p className="text-[10px] text-slate-400 italic mt-1">Corresponde al total de cargos fijos + cargos variables</p>
+            </div>
+            <div><label className={labelClass}>Subtotal impuestos ($)</label><input type="number" step="any" className={inputClass} value={formData.subtotalTaxesSin} onChange={(e) => handleInputChange('subtotalTaxesSin', e.target.value)} /></div>
             <div className="md:col-span-2"><label className={`${labelClass} text-emerald-600`}>TOTAL A PAGAR ($) *</label><input type="number" step="any" className={`${inputClass} border-emerald-600 bg-emerald-50 font-black text-xl shadow-inner`} value={formData.totalToPaySin} onChange={(e) => handleInputChange('totalToPaySin', e.target.value)} /></div>
           </div>
         </div>
