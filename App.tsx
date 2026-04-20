@@ -46,7 +46,11 @@ const App: React.FC = () => {
             visitCount: increment(1)
           });
         }
-      } catch (error) {
+      } catch (error: any) {
+        if (error?.message?.includes('offline') || error?.message?.includes('Backend didn\'t respond')) {
+          // Silently handle offline mode or backend timeout.
+          return;
+        }
         console.error('Error incrementing visits:', error);
       }
     };
