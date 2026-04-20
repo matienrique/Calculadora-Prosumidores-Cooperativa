@@ -4,6 +4,7 @@ import { formatCurrency, formatNumber } from '../services/calculatorService';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import FeedbackForm from './FeedbackForm';
+import { useAdmin } from './AdminContext';
 
 interface Props {
   onBack: () => void;
@@ -37,10 +38,11 @@ const NotProsumerAssociationsFlow: React.FC<Props> = ({ onBack }) => {
   const [showAux, setShowAux] = useState(true);
   const [showFullLog, setShowFullLog] = useState(true);
   const [showFixedCharges, setShowFixedCharges] = useState(false);
+  const { tarifaGsf } = useAdmin();
 
   // Variables internas obligatorias
   const Autoconsumo_estimado = 0.50; // Changed to 50% for Associations
-  const TARIFA_GSF = 24.27;
+  const TARIFA_GSF = tarifaGsf['Asociaciones'];
 
   const [formData, setFormData] = useState<LocalFormData>({
     knowsPower: 'no',

@@ -4,6 +4,7 @@ import { formatCurrency, formatNumber } from '../services/calculatorService';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import FeedbackForm from './FeedbackForm';
+import { useAdmin } from './AdminContext';
 
 interface Props {
   onBack: () => void;
@@ -39,11 +40,12 @@ const NotProsumerLargeDemandFlow: React.FC<Props> = ({ onBack }) => {
   const [showResults, setShowResults] = useState(false);
   const [showAux, setShowAux] = useState(true);
   const [showFullLog, setShowFullLog] = useState(true);
+  const { tarifaGsf } = useAdmin();
 
   // Variables Internas Obligatorias
   const AUTOCONSUMO_ESTIMADO = 0.76;
   const TARIFA_RECON_COOP = 71.56;
-  const TARIFA_RECON_GSF = -27.61;
+  const TARIFA_RECON_GSF = tarifaGsf['Gran Demanda'];
 
   const [formData, setFormData] = useState<LocalFormData>({
     fiscalCondition: '',

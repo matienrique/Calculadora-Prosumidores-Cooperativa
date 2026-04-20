@@ -11,6 +11,7 @@ import {
   writeBatch,
   getDoc
 } from 'firebase/firestore';
+import { useAdmin } from './AdminContext';
 
 interface Feedback {
   id: string;
@@ -28,6 +29,11 @@ const StatsDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [visitCount, setVisitCount] = useState<number>(23);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const { tarifaGsf, setTarifaGsf } = useAdmin();
+
+  // Para el tablero de control de TARIFA_GSF
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<string>('');
 
   useEffect(() => {
     if (!isAuthorized) return;
@@ -177,6 +183,78 @@ const StatsDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
           <p className="text-[10px] font-black text-red-400 uppercase tracking-[0.2em] mb-2">No Resolvieron</p>
           <p className="text-4xl font-black text-red-600">{unresolvedCount}</p>
+        </div>
+      </div>
+
+      {/* Tablero de Control - No Prosumidores */}
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="bg-blue-100 p-2 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Tablero de Control - No Prosumidores</h2>
+        </div>
+        <p className="text-slate-500 mb-6 font-medium">Modifique dinámicamente los valores de la variable TARIFA_GSF utilizados en los cálculos.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Object.entries(tarifaGsf).map(([key, value]) => (
+            <div key={key} className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col justify-between">
+              <div>
+                <p className="text-sm font-black text-slate-700 uppercase tracking-tight mb-2">Reconocimiento GSF - {key}</p>
+                {editingKey === key ? (
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-slate-500 font-bold">$</span>
+                    <input 
+                      type="number" 
+                      step="any" 
+                      className="p-2 border border-blue-300 rounded-lg w-32 focus:ring-2 focus:ring-blue-500 outline-none"
+                      value={editingValue}
+                      onChange={(e) => setEditingValue(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                ) : (
+                  <p className="text-2xl font-black text-blue-600">Valor actual: ${value}</p>
+                )}
+              </div>
+              <div className="mt-4 flex justify-end">
+                {editingKey === key ? (
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setEditingKey(null)}
+                      className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-slate-700"
+                    >
+                      Cancelar
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const parsed = parseFloat(editingValue);
+                        if (!isNaN(parsed)) {
+                          setTarifaGsf(key, parsed);
+                        }
+                        setEditingKey(null);
+                      }}
+                      className="px-4 py-2 text-xs font-bold uppercase tracking-widest bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md"
+                    >
+                      Guardar
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setEditingKey(key);
+                      setEditingValue(value.toString());
+                    }}
+                    className="px-4 py-2 text-xs font-bold uppercase tracking-widest bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors"
+                  >
+                    Modificar
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

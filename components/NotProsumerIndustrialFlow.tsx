@@ -5,6 +5,7 @@ import { formatCurrency, formatNumber } from '../services/calculatorService';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import FeedbackForm from './FeedbackForm';
+import { useAdmin } from './AdminContext';
 
 interface Props {
   onBack: () => void;
@@ -38,10 +39,11 @@ const NotProsumerIndustrialFlow: React.FC<Props> = ({ onBack }) => {
   const [showAux, setShowAux] = useState(true);
   const [showFullLog, setShowFullLog] = useState(true);
   const [showFixedCharges, setShowFixedCharges] = useState(false);
+  const { tarifaGsf } = useAdmin();
 
   // VARIABLES ESPECÍFICAS PARA USUARIO INDUSTRIAL
   const Autoconsumo_estimado = 0.90;
-  const TARIFA_GSF = 40.51;
+  const TARIFA_GSF = tarifaGsf['Industrial'];
 
   const [formData, setFormData] = useState<LocalFormData>({
     knowsPower: 'no',
