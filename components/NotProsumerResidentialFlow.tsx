@@ -1,3 +1,5 @@
+import { incrementCompletedCount } from './incrementCompleted';
+import ChatbotHelper from './ChatbotHelper';
 import React, { useState, useMemo } from 'react';
 import { FixedCharge, EnergyBand } from '../types';
 import { formatCurrency, formatNumber } from '../services/calculatorService';
@@ -38,7 +40,7 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
   const [showAux, setShowAux] = useState(true);
   const [showFullLog, setShowFullLog] = useState(true);
   const [showFixedCharges, setShowFixedCharges] = useState(false);
-  const { tarifaGsf } = useAdmin();
+  const { tarifaGsf, tipoCambio, inversionResidencial } = useAdmin();
 
   // Variables internas obligatorias
   const Autoconsumo_estimado = 0.40;
@@ -164,14 +166,20 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
     const ahorroImpuestos = subtotalTaxesSin - subtotalTaxesCon;
     const ahorroReconocimientos = reconGSF;
 
+    // Nuevas variables dinámicas
+    const inversionInicial = maxPower * tipoCambio * inversionResidencial;
+    const ahorroAnual = ahorroTotal * 12;
+    const periodoRecupero = ahorroAnual > 0 ? Math.floor(inversionInicial / ahorroAnual) : 0;
+
     return {
       TOTAL, maxPower, genPromedio, EG, ER, autoconsumoKwh, EE,
       subtotalEnergyCon, subtotalTaxesCon, reconGSF, totalEnergiaCon, totalFacturaCon,
       ahorroTotal, ahorroAutoconsumo, ahorroImpuestos, ahorroReconocimientos,
       totalToPaySin, kwhUltimaBandaSin, subtotalEnergySin, subtotalTaxesSin,
-      precioUltimaBanda, sumaImportesHastaPenultima, ultimaBandaKwhValue
+      precioUltimaBanda, sumaImportesHastaPenultima, ultimaBandaKwhValue,
+      inversionInicial, ahorroAnual, periodoRecupero
     };
-  }, [formData, fiscalData]);
+  }, [formData, fiscalData, tipoCambio, inversionResidencial]);
 
   // Se corrige para que NO use parseFloat en campos de texto (Situación Fiscal)
   const handleInputChange = (field: keyof LocalFormData, value: any) => {
@@ -271,25 +279,42 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="text-center bg-blue-50 p-4 rounded-2xl border border-blue-100">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center mb-6">
+          <h3 className="text-xl font-black text-slate-800 uppercase italic tracking-tighter">
+            AHORRO TOTAL ESTIMADO: {formatCurrency(results.ahorroTotal)} ({Math.round((results.ahorroTotal / results.totalToPaySin) * 100)}%)
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] p-6 rounded-3xl shadow-xl text-center text-white">
+            <p className="text-blue-100 text-[10px] font-black uppercase mb-1 tracking-widest">Factura estimada (Prosumidor)</p>
+            <p className="text-3xl font-black">{formatCurrency(results.totalFacturaCon)}</p>
+          </div>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
+            <p className="text-slate-400 text-[10px] font-black uppercase mb-1 tracking-widest">Tu factura actual</p>
+            <p className="text-3xl font-bold text-slate-800">{formatCurrency(results.totalToPaySin)}</p>
+          </div>
+        </div>
+
+        <div className="text-center bg-blue-50 p-4 rounded-2xl border border-blue-100 mb-6">
           <p className="text-xs font-black text-blue-800 uppercase tracking-widest">Potencia maxima de instalacion</p>
           <p className="text-2xl font-black text-blue-600">{results.maxPower.toFixed(2)} kW</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
-            <p className="text-slate-400 text-[10px] font-black uppercase mb-1 tracking-widest">Factura Sin Programa</p>
-            <p className="text-3xl font-bold text-slate-800">{formatCurrency(results.totalToPaySin)}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] p-6 rounded-3xl shadow-xl text-center text-white flex flex-col justify-center">
+            <p className="text-blue-100 text-xs font-black uppercase mb-2 tracking-widest">Período de recuperación</p>
+            <p className="text-3xl font-black">{results.periodoRecupero} años</p>
           </div>
-          <div className="bg-gradient-to-r from-[#FF5F6D] to-[#B83AF3] p-6 rounded-3xl shadow-xl text-center text-white">
-            <p className="text-blue-100 text-[10px] font-black uppercase mb-1 tracking-widest">Factura Con Prosumidores 4.0</p>
-            <p className="text-3xl font-bold">{formatCurrency(results.totalFacturaCon)}</p>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center flex flex-col justify-center">
+            <p className="text-slate-500 text-xs font-black uppercase mb-2 tracking-widest">Vida útil de los paneles solares</p>
+            <p className="text-sm font-medium text-slate-600">El sistema de paneles solares está diseñado para ofrecer un rendimiento óptimo durante una vida útil estimada de 25 años.</p>
           </div>
         </div>
 
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
-          <h3 className="text-xl font-black text-slate-800 mb-8 uppercase italic tracking-tighter">
-            AHORRO TOTAL ESTIMADO: {formatCurrency(results.ahorroTotal)} ({Math.round((results.ahorroTotal / results.totalToPaySin) * 100)}%)
+          <h3 className="text-lg font-black text-slate-800 mb-8 uppercase italic tracking-tighter border-b border-slate-100 pb-4">
+            COMPOSICIÓN DEL AHORRO
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="space-y-4 text-left">
@@ -536,6 +561,7 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
               alert("Por favor complete situación fiscal, consumo mensual y total a pagar.");
               return;
             }
+            incrementCompletedCount();
             setShowResults(true);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }} 
@@ -544,6 +570,7 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
           Calcular
         </button>
       </div>
+      {!showResults && <ChatbotHelper />}
     </div>
   );
 };

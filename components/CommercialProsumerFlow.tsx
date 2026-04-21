@@ -1,3 +1,5 @@
+import { incrementCompletedCount } from './incrementCompleted';
+import ChatbotHelper from './ChatbotHelper';
 
 import React, { useState, useMemo } from 'react';
 import { FixedCharge, EnergyBand } from '../types';
@@ -414,6 +416,7 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
           Calcular Ahorro
         </button>
       </div>
+      {!showResults && <ChatbotHelper />}
     </div>
   );
 };

@@ -39,8 +39,8 @@ const App: React.FC = () => {
       try {
         const docSnap = await getDoc(metadataRef);
         if (!docSnap.exists()) {
-          // Start at 23 as requested
-          await setDoc(metadataRef, { visitCount: 23 });
+          // Start at 23 as requested for visits, 100 for completed
+          await setDoc(metadataRef, { visitCount: 23, completedCount: 100 });
         } else {
           await updateDoc(metadataRef, {
             visitCount: increment(1)

@@ -1,3 +1,5 @@
+import { incrementCompletedCount } from './incrementCompleted';
+import ChatbotHelper from './ChatbotHelper';
 
 import React, { useState, useMemo } from 'react';
 import { formatCurrency, formatNumber } from '../services/calculatorService';
@@ -431,6 +433,7 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
               alert("Por favor complete la condición fiscal y el total a pagar.");
               return;
             }
+            incrementCompletedCount();
             setShowResults(true);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
@@ -439,6 +442,7 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
           Calcular
         </button>
       </div>
+      {!showResults && <ChatbotHelper />}
     </div>
   );
 };
