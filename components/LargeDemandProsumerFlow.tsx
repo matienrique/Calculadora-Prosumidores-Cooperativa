@@ -370,15 +370,15 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <button 
           onClick={() => setProgramVersion('4.0')}
-          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === '4.0' ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-slate-200 bg-white hover:border-blue-300 shadow-sm'}`}
+          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === '4.0' ? 'border-purple-600 bg-purple-50 shadow-md' : 'border-slate-200 bg-white hover:border-purple-300 shadow-sm'}`}
         >
-          <span className="text-lg font-black text-blue-600 uppercase">Soy Prosumidor 4.0</span>
+          <span className="text-lg font-black text-purple-600 uppercase">Soy Prosumidor 4.0</span>
         </button>
         <button 
           onClick={() => setProgramVersion('legacy')}
-          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === 'legacy' ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-slate-200 bg-white hover:border-blue-300 shadow-sm'}`}
+          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === 'legacy' ? 'border-purple-600 bg-purple-50 shadow-md' : 'border-slate-200 bg-white hover:border-purple-300 shadow-sm'}`}
         >
-          <span className="text-lg font-black text-blue-600 uppercase block">Pertenezco a un programa anterior</span>
+          <span className="text-lg font-black text-purple-600 uppercase block">Pertenezco a un programa anterior</span>
           <span className="text-xs font-bold text-black mt-1 block">Programa ERA, Prosumidores 2</span>
         </button>
       </div>
