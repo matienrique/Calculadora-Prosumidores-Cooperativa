@@ -28,6 +28,7 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
   const [showResults, setShowResults] = useState(false);
   const [showAux, setShowAux] = useState(true);
   const [showFullLog, setShowFullLog] = useState(true);
+  const [programVersion, setProgramVersion] = useState<'4.0' | 'legacy' | null>(null);
   
   const [formData, setFormData] = useState<LocalFormData>({
     energyGenerated: "",
@@ -54,7 +55,7 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
     const totalToPay = parse(formData.totalToPay);
     const subtotalImp = parse(formData.subtotalTaxes);
     const subtotalEnergy = parse(formData.subtotalEnergyElectric);
-    const recon = parse(formData.environmentalBenefit);
+    const recon = programVersion === 'legacy' ? 0 : parse(formData.environmentalBenefit);
 
     const autoconsumo = Math.max(0, X - I);
     
@@ -105,7 +106,7 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
       arboles,
       X, I, C, totalToPay, subtotalImp, subtotalEnergy, recon
     };
-  }, [formData]);
+  }, [formData, programVersion]);
 
   const handleInputChange = (field: keyof LocalFormData, value: string) => {
     const parsed = value === "" ? "" : Math.max(0, parseFloat(value));
@@ -346,36 +347,56 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
         <p className="text-emerald-600 font-bold text-sm">Cooperativa Eléctrica • Programa Prosumidores 4.0</p>
       </div>
 
-      <div className={sectionClass}>
-        <h3 className="text-lg font-black text-emerald-600 border-b pb-2 mb-4 italic">DETALLE DE SU CONSUMO</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div><label className={labelClass}>Energía Generada (X)</label><input type="number" step="any" className={inputClass} value={formData.energyGenerated} onChange={(e) => handleInputChange('energyGenerated', e.target.value)} placeholder="kWh" /></div>
-          <div><label className={labelClass}>Energía Inyectada (I)</label><input type="number" step="any" className={inputClass} value={formData.energyInjected} onChange={(e) => handleInputChange('energyInjected', e.target.value)} placeholder="kWh" /></div>
-          <div><label className={labelClass}>Energía Entregada (C)</label><input type="number" step="any" className={inputClass} value={formData.energyDelivered} onChange={(e) => handleInputChange('energyDelivered', e.target.value)} placeholder="kWh" /></div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <button 
+          onClick={() => setProgramVersion('4.0')}
+          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === '4.0' ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-slate-200 bg-white hover:border-blue-300 shadow-sm'}`}
+        >
+          <span className="text-lg font-black text-blue-600 uppercase">Soy Prosumidor 4.0</span>
+        </button>
+        <button 
+          onClick={() => setProgramVersion('legacy')}
+          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === 'legacy' ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-slate-200 bg-white hover:border-blue-300 shadow-sm'}`}
+        >
+          <span className="text-lg font-black text-blue-600 uppercase block">Pertenezco a un programa anterior</span>
+          <span className="text-xs font-bold text-black mt-1 block">Programa ERA, Prosumidores 2</span>
+        </button>
       </div>
 
-      <div className={sectionClass}>
-        <h3 className="text-lg font-black text-emerald-600 border-b pb-2 mb-4 italic">DETALLE DE SU FACTURA</h3>
-        
-        <div className="space-y-4">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Cargos fijos</p>
-          {formData.fixedCharges.map((f, i) => (
-            <div key={f.id} className="flex gap-4 items-center animate-fadeIn">
-              <input type="number" step="any" className={inputClass} value={f.amount} onChange={(e) => updateList('fixedCharges', f.id, 'amount', e.target.value)} placeholder={`Importe Cargo Fijo #${i+1} ($)`} />
-              <button onClick={() => removeItem('fixedCharges', f.id)} className="p-2 text-red-400 hover:text-red-600"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+      {programVersion && (
+        <>
+          <div className={sectionClass}>
+            <h3 className="text-lg font-black text-emerald-600 border-b pb-2 mb-4 italic">DETALLE DE SU CONSUMO</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div><label className={labelClass}>Energía Generada (X)</label><input type="number" step="any" className={inputClass} value={formData.energyGenerated} onChange={(e) => handleInputChange('energyGenerated', e.target.value)} placeholder="kWh" /></div>
+              <div><label className={labelClass}>Energía Inyectada (I)</label><input type="number" step="any" className={inputClass} value={formData.energyInjected} onChange={(e) => handleInputChange('energyInjected', e.target.value)} placeholder="kWh" /></div>
+              <div><label className={labelClass}>Energía Entregada (C)</label><input type="number" step="any" className={inputClass} value={formData.energyDelivered} onChange={(e) => handleInputChange('energyDelivered', e.target.value)} placeholder="kWh" /></div>
             </div>
-          ))}
-          <button onClick={() => addItem('fixedCharges')} className="text-emerald-600 font-bold text-sm hover:underline">+ Agregar Cargo Fijo</button>
-        </div>
+          </div>
 
-        <div className="pt-4 border-t">
-          <label className={labelClass}>Reconocimiento por beneficio ambiental/Reconocimiento del Gobierno de Santa Fe ($)</label>
-          <input type="number" step="any" className={inputClass} value={formData.environmentalBenefit} onChange={(e) => handleInputChange('environmentalBenefit', e.target.value)} placeholder="Importe en ARS" />
-          <p className="text-[10px] text-slate-400 italic mt-1">Inserte el valor positivo del reconocimiento que se le cobra en la factura</p>
-        </div>
+          <div className={sectionClass}>
+            <h3 className="text-lg font-black text-emerald-600 border-b pb-2 mb-4 italic">DETALLE DE SU FACTURA</h3>
+            
+            <div className="space-y-4">
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Cargos fijos</p>
+              {formData.fixedCharges.map((f, i) => (
+                <div key={f.id} className="flex gap-4 items-center animate-fadeIn">
+                  <input type="number" step="any" className={inputClass} value={f.amount} onChange={(e) => updateList('fixedCharges', f.id, 'amount', e.target.value)} placeholder={`Importe Cargo Fijo #${i+1} ($)`} />
+                  <button onClick={() => removeItem('fixedCharges', f.id)} className="p-2 text-red-400 hover:text-red-600"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                </div>
+              ))}
+              <button onClick={() => addItem('fixedCharges')} className="text-emerald-600 font-bold text-sm hover:underline">+ Agregar Cargo Fijo</button>
+            </div>
 
-        <div className="pt-4 border-t space-y-6">
+            {programVersion === '4.0' && (
+              <div className="pt-4 border-t">
+                <label className={labelClass}>Reconocimiento por beneficio ambiental/Reconocimiento del Gobierno de Santa Fe ($)</label>
+                <input type="number" step="any" className={inputClass} value={formData.environmentalBenefit} onChange={(e) => handleInputChange('environmentalBenefit', e.target.value)} placeholder="Importe en ARS" />
+                <p className="text-[10px] text-slate-400 italic mt-1">Inserte el valor positivo del reconocimiento que se le cobra en la factura</p>
+              </div>
+            )}
+
+            <div className="pt-4 border-t space-y-6">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Bandas de energía</p>
           {formData.energyBands.map((b, i) => (
             <div key={b.id} className="grid grid-cols-2 gap-4 items-center bg-slate-50 p-4 rounded-2xl border border-slate-100 relative">
@@ -411,11 +432,13 @@ const CommercialProsumerFlow: React.FC<Props> = ({ onBack }) => {
         </div>
       </div>
 
-      <div className="flex justify-center pt-8">
-        <button onClick={() => setShowResults(true)} className="bg-red-600 hover:bg-red-700 text-white font-black py-5 px-16 rounded-full shadow-2xl hover:shadow-red-200 transition-all duration-300 transform hover:-translate-y-1 uppercase tracking-widest text-lg">
-          Calcular Ahorro
-        </button>
-      </div>
+          <div className="flex justify-center pt-8">
+            <button onClick={() => { incrementCompletedCount(); setShowResults(true); }} className="bg-red-600 hover:bg-red-700 text-white font-black py-5 px-16 rounded-full shadow-2xl hover:shadow-red-200 transition-all duration-300 transform hover:-translate-y-1 uppercase tracking-widest text-lg">
+              Calcular Ahorro
+            </button>
+          </div>
+        </>
+      )}
       {!showResults && <ChatbotHelper />}
     </div>
   );

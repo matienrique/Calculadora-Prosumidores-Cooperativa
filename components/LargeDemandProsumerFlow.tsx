@@ -53,6 +53,7 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
   const [showResults, setShowResults] = useState(false);
   const [showAux, setShowAux] = useState(true);
   const [showFullLog, setShowFullLog] = useState(true);
+  const [programVersion, setProgramVersion] = useState<'4.0' | 'legacy' | null>(null);
 
   const [formData, setFormData] = useState<LocalFormData>({
     fiscalCondition: '',
@@ -134,7 +135,8 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
     const ahorroAutoconsumo = subtotalBasicoSinPros - (parse(formData.subtotalBasico) - parse(formData.reconCoopRenovable));
     const impuestosConPros = parse(formData.subtotalGeneral) - parse(formData.subtotalBasico);
     const ahorroImpuestos = impuestosSinPros - impuestosConPros;
-    const ahorroReconocimientos = Math.abs (parse(formData.reconCoopRenovable) + parse(formData.reconGSFPymes));
+    const gsfRecon = programVersion === 'legacy' ? 0 : parse(formData.reconGSFPymes);
+    const ahorroReconocimientos = Math.abs (parse(formData.reconCoopRenovable) + gsfRecon);
 
     // 9. Impacto Ambiental
     const energiaGeneradaTotal = parse(formData.generadaPico) + parse(formData.generadaResto) + parse(formData.generadaValle);
@@ -148,7 +150,7 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
       totalFacturaSinPros, ahorroTotal, ahorroAutoconsumo, ahorroImpuestos,
       ahorroReconocimientos, energiaGeneradaTotal, co2Evitado, arboles
     };
-  }, [formData, fiscalInfo]);
+  }, [formData, fiscalInfo, programVersion]);
 
   const handleInputChange = (field: keyof LocalFormData, value: string) => {
     if (field === 'fiscalCondition') {
@@ -365,44 +367,64 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
         </div>
       </div>
 
-      <div className={sectionClass}>
-        <h3 className="text-lg font-black text-purple-600 border-b pb-2 mb-4 italic uppercase tracking-tighter">CONDICIÓN FISCAL</h3>
-        <div>
-          <label className={labelClass}>¿Cuál es tu condición fiscal? *</label>
-          <select 
-            className={inputClass} 
-            value={formData.fiscalCondition} 
-            onChange={(e) => handleInputChange('fiscalCondition', e.target.value)}
-          >
-            <option value="">Seleccione...</option>
-            {Object.values(FiscalCondition).map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          {formData.fiscalCondition && (
-            <div className="mt-3 bg-purple-50 p-4 rounded-xl border border-purple-100 text-[10px] font-black text-purple-700 uppercase tracking-widest animate-fadeIn">
-              {fiscalInfo.label}
-            </div>
-          )}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <button 
+          onClick={() => setProgramVersion('4.0')}
+          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === '4.0' ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-slate-200 bg-white hover:border-blue-300 shadow-sm'}`}
+        >
+          <span className="text-lg font-black text-blue-600 uppercase">Soy Prosumidor 4.0</span>
+        </button>
+        <button 
+          onClick={() => setProgramVersion('legacy')}
+          className={`p-6 rounded-2xl border-2 transition-all text-center ${programVersion === 'legacy' ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-slate-200 bg-white hover:border-blue-300 shadow-sm'}`}
+        >
+          <span className="text-lg font-black text-blue-600 uppercase block">Pertenezco a un programa anterior</span>
+          <span className="text-xs font-bold text-black mt-1 block">Programa ERA, Prosumidores 2</span>
+        </button>
       </div>
 
-      <div className={sectionClass}>
-        <h3 className="text-lg font-black text-purple-600 border-b pb-2 mb-4 italic uppercase tracking-tighter">IMPORTES DE LA FACTURA ($)</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div><label className={labelClass}>Cuota de servicio (Cargo Comercial)</label><input type="number" className={inputClass} value={formData.cargoComercial} onChange={(e) => handleInputChange('cargoComercial', e.target.value)} /></div>
-          <div><label className={labelClass}>Cargo Cap. Suministro horario pico</label><input type="number" className={inputClass} value={formData.cargoCapPico} onChange={(e) => handleInputChange('cargoCapPico', e.target.value)} /></div>
-          <div><label className={labelClass}>Cargo Cap. Suministro fuera de pico</label><input type="number" className={inputClass} value={formData.cargoCapFueraPico} onChange={(e) => handleInputChange('cargoCapFueraPico', e.target.value)} /></div>
-          <div><label className={labelClass}>Cargo Cap. potencia adquirida</label><input type="number" className={inputClass} value={formData.cargoCapPotenciaAdquirida} onChange={(e) => handleInputChange('cargoCapPotenciaAdquirida', e.target.value)} /></div>
-          <div><label className={labelClass}>Tarifa eléctrica horario pico</label><input type="number" className={inputClass} value={formData.tarifaPico} onChange={(e) => handleInputChange('tarifaPico', e.target.value)} /></div>
-          <div><label className={labelClass}>Tarifa eléctrica horario resto</label><input type="number" className={inputClass} value={formData.tarifaResto} onChange={(e) => handleInputChange('tarifaResto', e.target.value)} /></div>
-          <div><label className={labelClass}>Tarifa eléctrica horario valle</label><input type="number" className={inputClass} value={formData.tarifaValle} onChange={(e) => handleInputChange('tarifaValle', e.target.value)} /></div>
-          <div><label className={labelClass}>Bonificación/Recargo por factor de potencia</label><input type="number" className={inputClass} value={formData.bonifFactorPotencia} onChange={(e) => handleInputChange('bonifFactorPotencia', e.target.value)} /></div>
-          <div><label className={labelClass}>Reconocimiento Cooperativa a energía renovable recibida</label><input type="number" className={inputClass} value={formData.reconCoopRenovable} onChange={(e) => handleInputChange('reconCoopRenovable', e.target.value)} /></div>
-          <div><label className={labelClass}>Subtotal Básico</label><input type="number" className={inputClass} value={formData.subtotalBasico} onChange={(e) => handleInputChange('subtotalBasico', e.target.value)} /></div>
-          <div><label className={labelClass}>Subtotal General</label><input type="number" className={inputClass} value={formData.subtotalGeneral} onChange={(e) => handleInputChange('subtotalGeneral', e.target.value)} /></div>
-          <div><label className={labelClass}>Reconocimiento GSF a energía renovable generada a PYMES</label><input type="number" className={inputClass} value={formData.reconGSFPymes} onChange={(e) => handleInputChange('reconGSFPymes', e.target.value)} /></div>
-          <div><label className={labelClass}>Ley N° 12692 ($)</label><input type="number" className={inputClass} value={formData.ley12692} onChange={(e) => handleInputChange('ley12692', e.target.value)} /></div>
-          <div className="md:col-span-2"><label className={`${labelClass} text-purple-600`}>TOTAL A PAGAR *</label><input type="number" className={`${inputClass} border-purple-600 bg-purple-50 font-black text-xl`} value={formData.totalAPagar} onChange={(e) => handleInputChange('totalAPagar', e.target.value)} /></div>
-        </div>
+      {programVersion && (
+        <>
+          <div className={sectionClass}>
+            <h3 className="text-lg font-black text-purple-600 border-b pb-2 mb-4 italic uppercase tracking-tighter">CONDICIÓN FISCAL</h3>
+            <div>
+              <label className={labelClass}>¿Cuál es tu condición fiscal? *</label>
+              <select 
+                className={inputClass} 
+                value={formData.fiscalCondition} 
+                onChange={(e) => handleInputChange('fiscalCondition', e.target.value)}
+              >
+                <option value="">Seleccione...</option>
+                {Object.values(FiscalCondition).map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              {formData.fiscalCondition && (
+                <div className="mt-3 bg-purple-50 p-4 rounded-xl border border-purple-100 text-[10px] font-black text-purple-700 uppercase tracking-widest animate-fadeIn">
+                  {fiscalInfo.label}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={sectionClass}>
+            <h3 className="text-lg font-black text-purple-600 border-b pb-2 mb-4 italic uppercase tracking-tighter">IMPORTES DE LA FACTURA ($)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div><label className={labelClass}>Cuota de servicio (Cargo Comercial)</label><input type="number" className={inputClass} value={formData.cargoComercial} onChange={(e) => handleInputChange('cargoComercial', e.target.value)} /></div>
+              <div><label className={labelClass}>Cargo Cap. Suministro horario pico</label><input type="number" className={inputClass} value={formData.cargoCapPico} onChange={(e) => handleInputChange('cargoCapPico', e.target.value)} /></div>
+              <div><label className={labelClass}>Cargo Cap. Suministro fuera de pico</label><input type="number" className={inputClass} value={formData.cargoCapFueraPico} onChange={(e) => handleInputChange('cargoCapFueraPico', e.target.value)} /></div>
+              <div><label className={labelClass}>Cargo Cap. potencia adquirida</label><input type="number" className={inputClass} value={formData.cargoCapPotenciaAdquirida} onChange={(e) => handleInputChange('cargoCapPotenciaAdquirida', e.target.value)} /></div>
+              <div><label className={labelClass}>Tarifa eléctrica horario pico</label><input type="number" className={inputClass} value={formData.tarifaPico} onChange={(e) => handleInputChange('tarifaPico', e.target.value)} /></div>
+              <div><label className={labelClass}>Tarifa eléctrica horario resto</label><input type="number" className={inputClass} value={formData.tarifaResto} onChange={(e) => handleInputChange('tarifaResto', e.target.value)} /></div>
+              <div><label className={labelClass}>Tarifa eléctrica horario valle</label><input type="number" className={inputClass} value={formData.tarifaValle} onChange={(e) => handleInputChange('tarifaValle', e.target.value)} /></div>
+              <div><label className={labelClass}>Bonificación/Recargo por factor de potencia</label><input type="number" className={inputClass} value={formData.bonifFactorPotencia} onChange={(e) => handleInputChange('bonifFactorPotencia', e.target.value)} /></div>
+              <div><label className={labelClass}>Reconocimiento Cooperativa a energía renovable recibida</label><input type="number" className={inputClass} value={formData.reconCoopRenovable} onChange={(e) => handleInputChange('reconCoopRenovable', e.target.value)} /></div>
+              <div><label className={labelClass}>Subtotal Básico</label><input type="number" className={inputClass} value={formData.subtotalBasico} onChange={(e) => handleInputChange('subtotalBasico', e.target.value)} /></div>
+              <div><label className={labelClass}>Subtotal General</label><input type="number" className={inputClass} value={formData.subtotalGeneral} onChange={(e) => handleInputChange('subtotalGeneral', e.target.value)} /></div>
+              {programVersion === '4.0' && (
+                <div><label className={labelClass}>Reconocimiento GSF a energía renovable generada a PYMES</label><input type="number" className={inputClass} value={formData.reconGSFPymes} onChange={(e) => handleInputChange('reconGSFPymes', e.target.value)} /></div>
+              )}
+              <div><label className={labelClass}>Ley N° 12692 ($)</label><input type="number" className={inputClass} value={formData.ley12692} onChange={(e) => handleInputChange('ley12692', e.target.value)} /></div>
+              <div className="md:col-span-2"><label className={`${labelClass} text-purple-600`}>TOTAL A PAGAR *</label><input type="number" className={`${inputClass} border-purple-600 bg-purple-50 font-black text-xl`} value={formData.totalAPagar} onChange={(e) => handleInputChange('totalAPagar', e.target.value)} /></div>
+            </div>
 
         <h4 className={subTitleClass}>ENERGÍA ENTREGADA POR LA COOP. AL USUARIO (kWh)</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -442,9 +464,11 @@ const LargeDemandProsumerFlow: React.FC<Props> = ({ onBack }) => {
           Calcular
         </button>
       </div>
-      {!showResults && <ChatbotHelper />}
-    </div>
-  );
+    </>
+  )}
+  {!showResults && <ChatbotHelper />}
+</div>
+);
 };
 
 export default LargeDemandProsumerFlow;
