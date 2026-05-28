@@ -127,7 +127,7 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
 
     // NUEVA REGLA: "Ultima banda" siempre toma la energía de la banda anterior (penúltima).
     // Si solo hay una banda, se usa esa banda como referencia base.
-    let ultimaBandaKwhValue = n >= 2 ? parse(prevBand?.kwh) : parse(formData.energyBands[0]?.kwh);
+    let ultimaBandaKwhValue = n >= 2 ? parse(prevBand?.kwh) : 0;
 
     // VARIABLE: kWh de última banda, SIN
     // kWhUltimaBandaSin = TOTAL - Última banda
@@ -141,7 +141,9 @@ const NotProsumerResidentialFlow: React.FC<Props> = ({ onBack }) => {
       ? formData.energyBands.slice(0, -1).reduce((acc, b) => acc + parse(b.amount), 0) 
       : 0;
 
-    const subtotalEnergyCon = sumaCargosFijos + sumaImportesHastaPenultima + (precioUltimaBanda * (kwhUltimaBandaSin - autoconsumoKwh));
+    const subtotalEnergyCon = n === 1
+      ? sumaCargosFijos + (precioUltimaBanda * (kwhUltimaBandaSin - autoconsumoKwh))
+      : sumaCargosFijos + sumaImportesHastaPenultima + (precioUltimaBanda * (kwhUltimaBandaSin - autoconsumoKwh));
 
     // 9. Subtotal Impuestos con
     const subtotalEnergySin = parse(formData.subtotalEnergySin);
