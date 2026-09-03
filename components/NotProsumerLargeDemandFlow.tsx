@@ -45,7 +45,7 @@ const NotProsumerLargeDemandFlow: React.FC<Props> = ({ onBack }) => {
   const { tarifaGsf, tipoCambio, inversionNoResidencial } = useAdmin();
 
   // Variables Internas Obligatorias
-  const AUTOCONSUMO_ESTIMADO = 0.76;
+  const AUTOCONSUMO_ESTIMADO = 1.0;
   const TARIFA_RECON_COOP = 71.56;
   const TARIFA_RECON_GSF = tarifaGsf['Gran Demanda'];
 
@@ -438,7 +438,7 @@ const NotProsumerLargeDemandFlow: React.FC<Props> = ({ onBack }) => {
           {formData.fiscalCondition && (
             <div className="mt-4 bg-purple-50 p-6 rounded-2xl border border-purple-100 animate-fadeIn">
               <p className="text-[11px] font-black text-purple-700 uppercase tracking-widest">{fiscalInfo.label}</p>
-              <p className="text-[11px] font-black text-purple-500 uppercase tracking-widest mt-1">Autoconsumo estimado aplicado: 35%</p>
+              <p className="text-[11px] font-black text-purple-500 uppercase tracking-widest mt-1">Autoconsumo estimado aplicado: 100%</p>
             </div>
           )}
         </div>
